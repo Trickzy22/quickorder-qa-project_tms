@@ -1,0 +1,25 @@
+# ERR-08 : Contrôle d'accès aux pages protégées (UI)
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> GET /checkout
+< 302 /checkout Location: /login?next=%2Fcheckout
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> GET /admin/
+< 302 -> / ; 200 /
+  message affiché : [danger] Accès réservé aux administrateurs.
+
+> POST /login
+  form: {'email': 'bob@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> GET /orders/1
+< 302 -> /orders ; 200 /orders
+  message affiché : [danger] Commande inaccessible.
+
+# RÉSULTAT ATTENDU : 1) redirection vers /login  2) accès refusé « réservé aux administrateurs »  3) « Commande inaccessible ».
+# RÉSULTAT OBTENU  : 1) HTTP 302 → /login?next=%2Fcheckout ; 2) ['[danger] Accès réservé aux administrateurs.'] ; 3) ['[danger] Commande inaccessible.'].
+# STATUT           : Pass

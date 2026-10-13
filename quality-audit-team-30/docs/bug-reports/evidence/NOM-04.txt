@@ -1,0 +1,28 @@
+# NOM-04 : Application d'un coupon valide au checkout (UI)
+# Exécuté le 13/10/2026 14:35:23 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+> POST /cart/add/1
+  form: {'quantity': 2}
+< 302 -> / ; 200 /
+  message affiché : [success] Classic Burger ajouté au panier.
+
+> POST /checkout
+  form: {'coupon': 'WELCOME10', 'confirm': '0', 'payment_method': 'card'}
+< 200 /checkout
+
+# page commande : {'status': None, 'total': '24.41', 'discount': '2.38', 'change': None, 'payment': None}
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+# RÉSULTAT ATTENDU : Réduction affichée 2,38 € ; total 23,80 + 2,99 − 2,38 = 24,41 €.
+# RÉSULTAT OBTENU  : Réduction affichée 2.38 € ; total 24.41 €.
+# STATUT           : Pass

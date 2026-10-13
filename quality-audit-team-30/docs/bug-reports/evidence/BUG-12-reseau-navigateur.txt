@@ -1,0 +1,9 @@
+Relevé réseau du navigateur (Edge) : connexion avec /login?next=https://example.org/phishing
+
+GET http://127.0.0.1:5000/login?next=https://example.org/phishing -> 200
+GET http://127.0.0.1:5000/static/css/style.css -> 200
+POST http://127.0.0.1:5000/login?next=https://example.org/phishing -> 302   Location: https://example.org/phishing
+GET https://example.org/phishing -> 404
+GET https://example.org/s.js -> 200
+
+URL finale affichée par le navigateur : https://example.org/phishing

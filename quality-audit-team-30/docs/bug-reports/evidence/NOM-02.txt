@@ -1,0 +1,10 @@
+# NOM-02 : Inscription d'un nouveau client
+# Exécuté le 13/10/2026 14:35:22 sur http://127.0.0.1:5000
+
+> POST /register
+  form: {'name': 'Testeur QA', 'email': 'qa.nom02.1791894922@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+# RÉSULTAT ATTENDU : Compte créé, utilisateur connecté automatiquement et redirigé vers l'accueil.
+# RÉSULTAT OBTENU  : Compte créé et session ouverte : oui (page finale /).
+# STATUT           : Pass

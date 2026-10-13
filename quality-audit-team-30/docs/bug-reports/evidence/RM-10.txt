@@ -1,0 +1,32 @@
+# RM-10 : L'annulation d'une commande restitue le stock et le paiement
+# Exécuté le 13/10/2026 14:35:26 sur http://127.0.0.1:5000
+
+> GET /api/products/19
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"available": true, "calories": 410, "category": "Desserts", "description": "Dessert italien au café", "id": 19, "is_vegetarian": true, "name": "Tiramisu", "price": 6.5, "restaurant_id": 4, "stock": 99}
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": [{"product_id": 19, "quantity": 3}], "payment_method": "card"}
+< 201 (application/json)
+  {"cash_received": null, "change_due": null, "created_at": "2026-10-13T12:35:26.987341", "delivery_fee": 2.49, "discount": 0.0, "id": 20, "items": [{"line_total": 19.5, "product_id": 19, "product_name": "Tiramisu", "quantity": 3, "unit_price": 6.5}], "payment_method": "card", "payment_status": "paid", "restaurant_id": 4, "status": "confirmed", "subtotal": 19.5, "total": 21.99}
+
+> GET /api/products/19
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"available": true, "calories": 410, "category": "Desserts", "description": "Dessert italien au café", "id": 19, "is_vegetarian": true, "name": "Tiramisu", "price": 6.5, "restaurant_id": 4, "stock": 96}
+
+> POST /api/orders/20/cancel
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"cash_received": null, "change_due": null, "created_at": "2026-10-13T12:35:26.987341", "delivery_fee": 2.49, "discount": 0.0, "id": 20, "items": [{"line_total": 19.5, "product_id": 19, "product_name": "Tiramisu", "quantity": 3, "unit_price": 6.5}], "payment_method": "card", "payment_status": "paid", "restaurant_id": 4, "status": "cancelled", "subtotal": 19.5, "total": 21.99}
+
+> GET /api/products/19
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"available": true, "calories": 410, "category": "Desserts", "description": "Dessert italien au café", "id": 19, "is_vegetarian": true, "name": "Tiramisu", "price": 6.5, "restaurant_id": 4, "stock": 96}
+
+# RÉSULTAT ATTENDU : Stock revenu à sa valeur initiale ; payment_status passé à refunded (ou équivalent).
+# RÉSULTAT OBTENU  : Stock 99 → 96 après commande → 96 après annulation ; statut cancelled ; payment_status « paid ».
+# STATUT           : Fail

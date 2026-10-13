@@ -1,0 +1,27 @@
+# ERR-03 : API : identifiants inexistants
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> GET /api/restaurants/9999
+  X-API-Key: quickorder-demo-key
+< 404 (text/html; charset=utf-8)
+  <!doctype html> <html lang=en> <title>404 Not Found</title> <h1>Not Found</h1> <p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p> 
+
+> GET /api/products/9999
+  X-API-Key: quickorder-demo-key
+< 404 (text/html; charset=utf-8)
+  <!doctype html> <html lang=en> <title>404 Not Found</title> <h1>Not Found</h1> <p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p> 
+
+> GET /api/orders/9999
+  X-API-Key: quickorder-demo-key
+< 404 (text/html; charset=utf-8)
+  <!doctype html> <html lang=en> <title>404 Not Found</title> <h1>Not Found</h1> <p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p> 
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": [{"product_id": 9999, "quantity": 1}], "payment_method": "card"}
+< 400 (application/json)
+  {"error": "one or more products do not exist"}
+
+# RÉSULTAT ATTENDU : HTTP 404 pour les trois GET ; HTTP 400 ou 404 pour le POST ; aucune commande créée.
+# RÉSULTAT OBTENU  : GET → [404, 404, 404] ; POST commande produit 9999 → HTTP 400 « one or more products do not exist ».
+# STATUT           : Pass

@@ -1,0 +1,18 @@
+# LIM-05 : API : coupon au montant minimum exact et juste en dessous
+# Exécuté le 13/10/2026 14:35:23 sur http://127.0.0.1:5000
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "WELCOME10", "subtotal": 20.0}
+< 200 (application/json)
+  {"code": "WELCOME10", "discount": 2.0, "discount_percent": 10.0, "valid": true}
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "WELCOME10", "subtotal": 19.99}
+< 200 (application/json)
+  {"error": "Montant minimum non atteint.", "minimum": 20.0, "valid": false}
+
+# RÉSULTAT ATTENDU : 20,00 → valid true, discount 2,00 ; 19,99 → valid false « Montant minimum non atteint ».
+# RÉSULTAT OBTENU  : 20,00 → valid=True, discount=2.0 ; 19,99 → valid=False (Montant minimum non atteint.).
+# STATUT           : Pass

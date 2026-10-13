@@ -1,0 +1,35 @@
+# RM-04 : Paiement en espèces : le montant remis doit couvrir le total
+# Exécuté le 13/10/2026 14:35:25 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+> POST /cart/add/1
+  form: {'quantity': 2}
+< 302 -> / ; 200 /
+  message affiché : [success] Classic Burger ajouté au panier.
+
+> GET /checkout
+< 200 /checkout
+
+# adresse proposée au checkout : «Domicile — 10 rue de Paris, 75001 Paris»
+> POST /checkout
+  form: {'address_id': '1', 'customer_note': '', 'coupon': '', 'payment_method': 'cash', 'confirm': '1', 'cash_received': '5.00'}
+< 302 -> /orders/14 ; 200 /orders/14
+  message affiché : [success] Commande confirmée !
+
+# page commande : {'status': 'confirmed', 'total': '26.79', 'discount': '0.00', 'change': '-21.79', 'payment': 'paid · cash'}
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": [{"product_id": 1, "quantity": 1}], "payment_method": "cash", "cash_received": 1}
+< 201 (application/json)
+  {"cash_received": 1.0, "change_due": -13.89, "created_at": "2026-10-13T12:35:26.060948", "delivery_fee": 2.99, "discount": 0.0, "id": 15, "items": [{"line_total": 11.9, "product_id": 1, "product_name": "Classic Burger", "quantity": 1, "unit_price": 11.9}], "payment_method": "cash", "payment_status": "paid", "restaurant_id": 1, "status": "confirmed", "subtotal": 11.9, "total": 14.89}
+
+# RÉSULTAT ATTENDU : Commande refusée avec message « montant insuffisant » ; aucune commande payée.
+# RÉSULTAT OBTENU  : UI : commande #14 confirmed « paid · cash », total 26.79 €, monnaie calculée -21.79 € ; API : HTTP 201, payment_status paid, change_due -13.89.
+# STATUT           : Fail

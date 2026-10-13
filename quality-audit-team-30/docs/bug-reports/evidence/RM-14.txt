@@ -1,0 +1,18 @@
+# RM-14 : TOKYO30 offre la livraison dès 30 € d'achat
+# Exécuté le 13/10/2026 14:35:27 sur http://127.0.0.1:5000
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "TOKYO30", "subtotal": 29.99}
+< 200 (application/json)
+  {"error": "Montant minimum non atteint.", "minimum": 30.0, "valid": false}
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "TOKYO30", "subtotal": 31.8}
+< 200 (application/json)
+  {"code": "TOKYO30", "discount": 3.49, "discount_percent": 100.0, "valid": true}
+
+# RÉSULTAT ATTENDU : 29,99 → non valide ; 31,80 → réduction 3,49 € (= frais de livraison).
+# RÉSULTAT OBTENU  : 29,99 → valid=False ; 31,80 → valid=True, discount=3.49.
+# STATUT           : Pass

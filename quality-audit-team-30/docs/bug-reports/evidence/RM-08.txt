@@ -1,0 +1,10 @@
+# RM-08 : Le filtre « Livraison max » ne retient que les restaurants sous le plafond
+# Exécuté le 13/10/2026 14:35:26 sur http://127.0.0.1:5000
+
+> GET /?max_delivery=2.50
+< 200 /?max_delivery=2.50
+
+# restaurants affichés : ['Couscous Atlas', 'Tokyo Bowl', 'Burger Factory', 'Night Sushi']
+# RÉSULTAT ATTENDU : Seuls Green Kitchen (1,99 €) et Pizza Roma (2,49 €) sont affichés.
+# RÉSULTAT OBTENU  : Restaurants affichés : Couscous Atlas, Tokyo Bowl, Burger Factory, Night Sushi.
+# STATUT           : Fail

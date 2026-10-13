@@ -1,0 +1,32 @@
+# LIM-08 : Panier UI : quantité au-delà du maximum affiché et du stock
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+> POST /cart/add/1
+  form: {'quantity': 1}
+< 302 -> / ; 200 /
+  message affiché : [success] Classic Burger ajouté au panier.
+
+> GET /api/products/1
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"available": true, "calories": 720, "category": "Burgers", "description": "Bœuf, cheddar, salade, sauce maison", "id": 1, "is_vegetarian": false, "name": "Classic Burger", "price": 11.9, "restaurant_id": 1, "stock": 98}
+
+> POST /cart
+  form: {'qty_1': '1000'}
+< 200 /cart
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+# RÉSULTAT ATTENDU : Quantité refusée ou ramenée au stock disponible ; message d'erreur.
+# RÉSULTAT OBTENU  : Stock 98 ; quantité enregistrée dans le panier : 1000 ; total panier 11902.99 € ; aucun message d'erreur : True.
+# STATUT           : Fail

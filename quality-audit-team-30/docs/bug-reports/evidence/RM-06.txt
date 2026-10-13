@@ -1,0 +1,38 @@
+# RM-06 : Le coupon ATLAS15 accorde la réduction annoncée (15 %)
+# Exécuté le 13/10/2026 14:35:26 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> GET /restaurant/5
+< 200 /restaurant/5
+
+# promotion affichée : utilisez le code ATLAS15 pour obtenir 15 % de réduction.
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+> POST /cart/add/20
+  form: {'quantity': 2}
+< 302 -> / ; 200 /
+  message affiché : [success] Couscous Royal ajouté au panier.
+
+> POST /checkout
+  form: {'coupon': 'ATLAS15', 'confirm': '0', 'payment_method': 'card'}
+< 200 /checkout
+
+# page commande : {'status': None, 'total': '35.21', 'discount': '3.58', 'change': None, 'payment': None}
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "ATLAS15", "subtotal": 35.8}
+< 200 (application/json)
+  {"code": "ATLAS15", "discount": 3.58, "discount_percent": 10.0, "valid": true}
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+# RÉSULTAT ATTENDU : Réduction de 15 % = 5,37 € ; total 35,80 + 2,99 − 5,37 = 33,42 €.
+# RÉSULTAT OBTENU  : Réduction appliquée 3.58 € (total 35.21 €) ; l'API annonce discount_percent = 10.0.
+# STATUT           : Fail

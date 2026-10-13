@@ -1,0 +1,15 @@
+# LIM-07 : Inscription : longueur minimale du mot de passe (7 / 8 caractères)
+# Exécuté le 13/10/2026 14:35:23 sur http://127.0.0.1:5000
+
+> POST /register
+  form: {'name': 'Limite Sept', 'email': 'qa.lim07a.1791894922@example.com', 'password': '***'}
+< 200 /register
+  message affiché : [danger] Nom, email valide et mot de passe d'au moins 8 caractères requis.
+
+> POST /register
+  form: {'name': 'Limite Huit', 'email': 'qa.lim07b.1791894922@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+# RÉSULTAT ATTENDU : 7 caractères → refus avec message ; 8 caractères → compte créé.
+# RÉSULTAT OBTENU  : 7 caractères → refusé ["[danger] Nom, email valide et mot de passe d'au moins 8 caractères requis."] ; 8 caractères → accepté.
+# STATUT           : Pass

@@ -1,0 +1,3 @@
+[error] Failed to load resource: the server responded with a status of 404 (NOT FOUND)
+[verbose] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms) %o
+[verbose] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms) %o

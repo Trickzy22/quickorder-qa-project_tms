@@ -1,0 +1,12 @@
+# ERR-05 : API : commande passée avec un coupon expiré
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": [{"product_id": 1, "quantity": 2}], "payment_method": "card", "coupon": "EXPIRED10"}
+< 201 (application/json)
+  {"cash_received": null, "change_due": null, "created_at": "2026-10-13T12:35:24.440627", "delivery_fee": 2.99, "discount": 2.38, "id": 7, "items": [{"line_total": 23.8, "product_id": 1, "product_name": "Classic Burger", "quantity": 2, "unit_price": 11.9}], "payment_method": "card", "payment_status": "paid", "restaurant_id": 1, "status": "confirmed", "subtotal": 23.8, "total": 24.41}
+
+# RÉSULTAT ATTENDU : Commande refusée, ou créée sans réduction (discount 0 ; total 26,79).
+# RÉSULTAT OBTENU  : HTTP 201 ; commande #7 ; discount 2.38 ; total 24.41.
+# STATUT           : Fail

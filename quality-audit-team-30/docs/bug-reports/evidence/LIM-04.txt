@@ -1,0 +1,22 @@
+# LIM-04 : API : quantité égale au stock + 1
+# Exécuté le 13/10/2026 14:35:23 sur http://127.0.0.1:5000
+
+> GET /api/products/7
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"available": true, "calories": 590, "category": "Bowls", "description": "Saumon, avocat, riz vinaigré", "id": 7, "is_vegetarian": false, "name": "Salmon Bowl", "price": 15.9, "restaurant_id": 2, "stock": 2}
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": [{"product_id": 7, "quantity": 3}], "payment_method": "card"}
+< 201 (application/json)
+  {"cash_received": null, "change_due": null, "created_at": "2026-10-13T12:35:23.784571", "delivery_fee": 3.49, "discount": 0.0, "id": 5, "items": [{"line_total": 47.7, "product_id": 7, "product_name": "Salmon Bowl", "quantity": 3, "unit_price": 15.9}], "payment_method": "card", "payment_status": "paid", "restaurant_id": 2, "status": "confirmed", "subtotal": 47.7, "total": 51.19}
+
+> GET /api/products/7
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"available": true, "calories": 590, "category": "Bowls", "description": "Saumon, avocat, riz vinaigré", "id": 7, "is_vegetarian": false, "name": "Salmon Bowl", "price": 15.9, "restaurant_id": 2, "stock": -1}
+
+# RÉSULTAT ATTENDU : Commande refusée (HTTP 409 ou 400) ; stock inchangé et jamais négatif.
+# RÉSULTAT OBTENU  : Stock initial 2 ; commande de 3 → HTTP 201 (commande #5) ; stock final -1.
+# STATUT           : Fail

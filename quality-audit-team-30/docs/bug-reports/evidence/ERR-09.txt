@@ -1,0 +1,11 @@
+# ERR-09 : API : format des réponses d'erreur 404
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> GET /api/restaurants/9999
+  X-API-Key: quickorder-demo-key
+< 404 (text/html; charset=utf-8)
+  <!doctype html> <html lang=en> <title>404 Not Found</title> <h1>Not Found</h1> <p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p> 
+
+# RÉSULTAT ATTENDU : HTTP 404 avec Content-Type application/json et un champ error.
+# RÉSULTAT OBTENU  : HTTP 404 ; Content-Type « text/html; charset=utf-8 ».
+# STATUT           : Fail

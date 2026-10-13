@@ -1,0 +1,18 @@
+# ERR-04 : API : validation d'un coupon expiré ou inconnu
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "EXPIRED10", "subtotal": 30}
+< 404 (application/json)
+  {"error": "Coupon invalide ou expiré.", "valid": false}
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "INCONNU", "subtotal": 30}
+< 404 (application/json)
+  {"error": "Coupon invalide ou expiré.", "valid": false}
+
+# RÉSULTAT ATTENDU : valid false dans les deux cas, message « Coupon invalide ou expiré ».
+# RÉSULTAT OBTENU  : EXPIRED10 → HTTP 404 valid=False ; INCONNU → HTTP 404 valid=False.
+# STATUT           : Pass

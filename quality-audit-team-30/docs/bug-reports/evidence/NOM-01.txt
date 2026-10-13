@@ -1,0 +1,10 @@
+# NOM-01 : Connexion d'un client avec des identifiants valides
+# Exécuté le 13/10/2026 14:35:22 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+# RÉSULTAT ATTENDU : Redirection vers l'accueil ; le nom « Alice Martin » et le lien Déconnexion sont affichés.
+# RÉSULTAT OBTENU  : HTTP 302 puis page d'accueil ; nom affiché : oui.
+# STATUT           : Pass

@@ -1,0 +1,16 @@
+# ERR-01 : Connexion avec un mot de passe incorrect
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 200 /login
+  message affiché : [danger] Email ou mot de passe incorrect.
+
+> POST /login
+  form: {'email': 'inconnu@example.com', 'password': '***'}
+< 200 /login
+  message affiché : [danger] Email ou mot de passe incorrect.
+
+# RÉSULTAT ATTENDU : Connexion refusée ; même message générique dans les deux cas ; pas de session.
+# RÉSULTAT OBTENU  : Connexion refusée ; message identique dans les deux cas : ['[danger] Email ou mot de passe incorrect.'].
+# STATUT           : Pass

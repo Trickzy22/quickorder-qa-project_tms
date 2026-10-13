@@ -1,0 +1,10 @@
+# ERR-10 : Connexion : paramètre next pointant vers un site externe
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> POST /login?next=https://example.org/phishing
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 /login?next=https://example.org/phishing Location: https://example.org/phishing
+
+# RÉSULTAT ATTENDU : Redirection vers une page interne (accueil) ; l'URL externe est ignorée.
+# RÉSULTAT OBTENU  : HTTP 302 ; Location : https://example.org/phishing.
+# STATUT           : Fail

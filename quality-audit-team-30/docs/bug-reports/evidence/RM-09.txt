@@ -1,0 +1,16 @@
+# RM-09 : Une commande livrée ne peut plus être annulée par le client
+# Exécuté le 13/10/2026 14:35:26 sur http://127.0.0.1:5000
+
+> POST /api/orders/1/cancel
+  X-API-Key: quickorder-demo-key
+< 409 (application/json)
+  {"error": "order cannot be cancelled", "status": "delivered"}
+
+> GET /api/orders/1
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"cash_received": null, "change_due": null, "created_at": "2026-09-22T08:30:48.079651", "delivery_fee": 2.99, "discount": 0.0, "id": 1, "items": [{"line_total": 11.9, "product_id": 1, "product_name": "Classic Burger", "quantity": 1, "unit_price": 11.9}, {"line_total": 3.5, "product_id": 3, "product_name": "Frites maison", "quantity": 1, "unit_price": 3.5}], "payment_method": "card", "payment_status": "paid", "restaurant_id": 1, "status": "delivered", "subtotal": 15.4, "total": 18.39}
+
+# RÉSULTAT ATTENDU : HTTP 409 « order cannot be cancelled » ; statut toujours delivered.
+# RÉSULTAT OBTENU  : HTTP 409 « order cannot be cancelled » ; statut conservé : delivered.
+# STATUT           : Pass

@@ -1,0 +1,18 @@
+# NOM-08 : Recommander une ancienne commande (UI)
+# Exécuté le 13/10/2026 14:35:23 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> POST /orders/1/reorder
+< 302 -> /cart ; 200 /cart
+  message affiché : [success] 2 produit(s) ajouté(s) au panier.
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+# RÉSULTAT ATTENDU : Panier contenant 1 Classic Burger et 1 Frites maison ; message « 2 produit(s) ajouté(s) au panier ».
+# RÉSULTAT OBTENU  : Panier rechargé avec les 2 produits : oui ; messages : ['[success] 2 produit(s) ajouté(s) au panier.'].
+# STATUT           : Pass

@@ -1,0 +1,16 @@
+# ERR-02 : API : clé absente ou incorrecte
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> GET /api/restaurants
+  X-API-Key: (absente)
+< 401 (application/json)
+  {"error": "missing or invalid X-API-Key", "hint": "Use Swagger > Authorize"}
+
+> GET /api/restaurants
+  X-API-Key: mauvaise-cle
+< 401 (application/json)
+  {"error": "missing or invalid X-API-Key", "hint": "Use Swagger > Authorize"}
+
+# RÉSULTAT ATTENDU : HTTP 401 avec un corps JSON d'erreur dans les deux cas.
+# RÉSULTAT OBTENU  : Sans clé → HTTP 401 ; clé erronée → HTTP 401 ; erreur « missing or invalid X-API-Key ».
+# STATUT           : Pass

@@ -1,0 +1,39 @@
+# NOM-03 : Commande complète par carte bancaire (UI)
+# Exécuté le 13/10/2026 14:35:22 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> GET /api/products/1
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"available": true, "calories": 720, "category": "Burgers", "description": "Bœuf, cheddar, salade, sauce maison", "id": 1, "is_vegetarian": false, "name": "Classic Burger", "price": 11.9, "restaurant_id": 1, "stock": 100}
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+> POST /cart/add/1
+  form: {'quantity': 2}
+< 302 -> / ; 200 /
+  message affiché : [success] Classic Burger ajouté au panier.
+
+> GET /checkout
+< 200 /checkout
+
+# adresse proposée au checkout : «Domicile — 10 rue de Paris, 75001 Paris»
+> POST /checkout
+  form: {'address_id': '1', 'customer_note': '', 'coupon': '', 'payment_method': 'card', 'confirm': '1'}
+< 302 -> /orders/2 ; 200 /orders/2
+  message affiché : [success] Commande confirmée !
+
+# page commande : {'status': 'confirmed', 'total': '26.79', 'discount': '0.00', 'change': None, 'payment': 'paid · card'}
+> GET /api/products/1
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"available": true, "calories": 720, "category": "Burgers", "description": "Bœuf, cheddar, salade, sauce maison", "id": 1, "is_vegetarian": false, "name": "Classic Burger", "price": 11.9, "restaurant_id": 1, "stock": 98}
+
+# RÉSULTAT ATTENDU : Commande créée au statut confirmed, payée ; total = 23,80 + 2,99 = 26,79 € ; stock décrémenté de 2.
+# RÉSULTAT OBTENU  : Commande #2 statut confirmed, total 26.79 €, paiement « paid · card » ; stock 100 → 98.
+# STATUT           : Pass

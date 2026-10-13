@@ -1,0 +1,37 @@
+# RM-07 : Le panier ne contient que des produits d'un même restaurant
+# Exécuté le 13/10/2026 14:35:26 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'alice@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+> POST /cart/add/1
+  form: {'quantity': 1}
+< 302 -> / ; 200 /
+  message affiché : [success] Classic Burger ajouté au panier.
+
+> POST /cart/add/6
+  form: {'quantity': 1}
+< 302 -> / ; 200 /
+  message affiché : [warning] Un panier ne peut contenir que des produits du même restaurant.
+
+> GET /cart
+< 200 /cart
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": [{"product_id": 1, "quantity": 1}, {"product_id": 6, "quantity": 1}], "payment_method": "card"}
+< 400 (application/json)
+  {"error": "all products must belong to the same restaurant"}
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+# RÉSULTAT ATTENDU : Second ajout refusé avec message ; API HTTP 400.
+# RÉSULTAT OBTENU  : UI : ['[warning] Un panier ne peut contenir que des produits du même restaurant.'] ; panier limité au 1er restaurant : oui ; API : HTTP 400.
+# STATUT           : Pass

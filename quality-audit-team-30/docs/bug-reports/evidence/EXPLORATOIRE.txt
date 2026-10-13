@@ -1,0 +1,37 @@
+# Observations exploratoires : relevés bruts, sans verdict Pass/Fail
+# En-tête Server : Werkzeug/3.1.3 Python/3.12.14
+# En-tête Content-Security-Policy : (absent)
+# En-tête X-Frame-Options : (absent)
+# En-tête X-Content-Type-Options : (absent)
+# En-tête Strict-Transport-Security : (absent)
+# Attributs du cookie de session : HttpOnly; Path=/
+# Jeton CSRF dans le formulaire de connexion : non
+
+> GET /?q=salade
+< 200 /?q=salade
+
+# recherche « salade » → []
+> GET /?q=japonaise
+< 200 /?q=japonaise
+
+# recherche « japonaise » → []
+> GET /?q=burger
+< 200 /?q=burger
+
+# recherche « burger » → ['Burger Factory']
+> GET /api/restaurants
+  X-API-Key: quickorder-demo-key
+< 200 (application/json)
+  {"count": 6, "items": [{"address": "7 boulevard Voltaire, Paris", "category": "Marocain", "delivery_fee": 2.99, "delivery_time_min": 40, "description": "Cuisine marocaine familiale et généreuse.", "id": 5, "is_open": true, "minimum_order": 25.0, "name": "Couscous Atlas", "promo_text": "🎟️ Code ATLAS15 annoncé comme -15% sur ce restaurant", "rating": 4.9}, {"address": "8 avenue de l'Opéra, Paris", "category": "Japonais", "delivery_fee": 3.49, "delivery_time_min": 35, "description": "Cuisine japonaise et bowls frais.", "id": 2, "is_open": true, "minimum_order": 15.0, "name": "Tokyo Bowl", "promo_text": "Livraison gratuite dès 30 € avec TOKYO30", "rating": 4.8}, {"address": "18 rue du Commerce, Paris", "category": "Burgers", "delivery_fee": 2.99, "delivery_time_min": 25, "description": "Burgers, frites et menus généreux.", "id": 1, "is_open": true, "minimum_order": 20.0, "name": "Burger Factory", "promo_text": "", "rating": 4.7}, {"address": "41 rue de Lyon, Paris", "category": "Healthy", "delivery_fee": 1.99, "delivery_time_min": 20, "description": "Salades, wraps et options végétariennes.", "id": 3, "is_open": true, "minimum_order": 12.0, "name": "Green Kitchen", "promo_text": "", "rating": 4.5}, {"address": "22 rue de la République, Paris", "category": "Italien", "delivery_fee": 2.49, "delivery_time_min": 30, "description": "Pizzas romaines, pâtes et desserts italiens.", "id": 4, "is_open": true, "minimum_order": 12.0, "name": "Pizza Roma", "promo_text": "", "rating": 4.3}, {"address": "5 rue des Tests, Paris", "category": "Japonais", "delivery_fee": 2.99, "delivery_time_min": 45, "description": "Restaurant fermé — uniquement pour les tests QA.", "id": 6, "is_open": false, "minimum_order": 10.0, "name": "Night Sushi", "promo_text": "Fermé aujourd'hui", "rating": 3.8}]}
+
+# restaurants fermés exposés par l'API : ['Night Sushi']
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "SAVE20", "subtotal": 999999}
+< 200 (application/json)
+  {"code": "SAVE20", "discount": 12.0, "discount_percent": 20.0, "valid": true}
+
+> GET /logout
+< 302 /logout Location: /
+
+# déconnexion par simple GET : HTTP 302

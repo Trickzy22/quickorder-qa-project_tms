@@ -1,0 +1,30 @@
+# ERR-07 : API : corps de requête mal formé
+# Exécuté le 13/10/2026 14:35:24 sur http://127.0.0.1:5000
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body (brut): {"items": [
+< 400 (application/json)
+  {"error": "items is required and must be a non-empty array"}
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": []}
+< 400 (application/json)
+  {"error": "items is required and must be a non-empty array"}
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": [{"product_id": 16, "quantity": "abc"}]}
+< 400 (application/json)
+  {"error": "quantity must be an integer"}
+
+> POST /api/orders
+  X-API-Key: quickorder-demo-key
+  body: {"items": [{"product_id": 16, "quantity": 1}, "x"]}
+< 500 (text/html; charset=utf-8)
+  <!doctype html> <html lang=en> <title>500 Internal Server Error</title> <h1>Internal Server Error</h1> <p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p> 
+
+# RÉSULTAT ATTENDU : HTTP 400 avec message d'erreur JSON pour les 4 requêtes.
+# RÉSULTAT OBTENU  : Codes obtenus : a) 400  b) 400  c) 400  d) 500.
+# STATUT           : Fail

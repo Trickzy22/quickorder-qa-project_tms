@@ -1,0 +1,19 @@
+# RM-12 : Seul un client ayant commandé peut laisser un avis
+# Exécuté le 13/10/2026 14:35:27 sur http://127.0.0.1:5000
+
+> POST /login
+  form: {'email': 'bob@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> GET /orders
+< 200 /orders
+
+# Bob a des commandes chez Couscous Atlas : False
+> POST /restaurant/5/review
+  form: {'rating': '1', 'comment': 'Avis de test QA sans commande'}
+< 302 -> /restaurant/5 ; 200 /restaurant/5
+  message affiché : [success] Merci pour votre avis !
+
+# RÉSULTAT ATTENDU : Publication refusée (« vous devez avoir commandé dans ce restaurant »).
+# RÉSULTAT OBTENU  : Messages : ['[success] Merci pour votre avis !'] ; avis accepté sans commande : oui.
+# STATUT           : Fail

@@ -1,0 +1,24 @@
+# LIM-06 : API : plafond de réduction d'un coupon
+# Exécuté le 13/10/2026 14:35:23 sur http://127.0.0.1:5000
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "SAVE20", "subtotal": 59.95}
+< 200 (application/json)
+  {"code": "SAVE20", "discount": 11.99, "discount_percent": 20.0, "valid": true}
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "SAVE20", "subtotal": 60.0}
+< 200 (application/json)
+  {"code": "SAVE20", "discount": 12.0, "discount_percent": 20.0, "valid": true}
+
+> POST /api/coupons/validate
+  X-API-Key: quickorder-demo-key
+  body: {"code": "SAVE20", "subtotal": 100.0}
+< 200 (application/json)
+  {"code": "SAVE20", "discount": 12.0, "discount_percent": 20.0, "valid": true}
+
+# RÉSULTAT ATTENDU : 59,95 → 11,99 ; 60,00 → 12,00 ; 100,00 → 12,00 (plafonné).
+# RÉSULTAT OBTENU  : Réductions obtenues : 59,95 → 11.99 ; 60,00 → 12.0 ; 100,00 → 12.0.
+# STATUT           : Pass

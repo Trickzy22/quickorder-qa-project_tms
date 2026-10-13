@@ -1,0 +1,29 @@
+# RM-13 : Une commande nécessite une adresse de livraison complète
+# Exécuté le 13/10/2026 14:35:27 sur http://127.0.0.1:5000
+
+> POST /register
+  form: {'name': 'Sans Adresse', 'email': 'qa.rm13.1791894922@example.com', 'password': '***'}
+< 302 -> / ; 200 /
+
+> POST /cart/clear
+< 302 -> /cart ; 200 /cart
+  message affiché : [info] Panier vidé.
+
+> POST /cart/add/16
+  form: {'quantity': 2}
+< 302 -> / ; 200 /
+  message affiché : [success] Margherita ajouté au panier.
+
+> GET /checkout
+< 200 /checkout
+
+# adresse proposée au checkout : «Domicile — ,»
+> POST /checkout
+  form: {'address_id': '5', 'customer_note': '', 'coupon': '', 'payment_method': 'card', 'confirm': '1'}
+< 302 -> /orders/21 ; 200 /orders/21
+  message affiché : [success] Commande confirmée !
+
+# adresse de livraison affichée sur la commande : «»
+# RÉSULTAT ATTENDU : Le checkout exige la saisie d'une adresse (rue, code postal, ville) avant de confirmer.
+# RÉSULTAT OBTENU  : Commande #21 confirmée avec l'adresse « Domicile » vide (rue, code postal et ville vides : «»).
+# STATUT           : Fail
